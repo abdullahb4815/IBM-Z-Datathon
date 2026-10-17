@@ -7,6 +7,8 @@ an AI/ML demand model on the backend. No login: each install gets a random devic
 ```
 frontend/   React Native (Expo + Expo Router) mobile app
 backend/    Python FastAPI service + AI/ML model
+notebooks/  Model training notebook
+data/       Training data (food banks, inventory history)
 ```
 
 ## Running
@@ -34,6 +36,23 @@ The frontend uses mock data until you point it at the backend. To connect, creat
 EXPO_PUBLIC_API_URL=http://192.168.x.x:8000
 ```
 
+## Train the requirement predictor
+
+The [model notebook](notebooks/model.ipynb) trains a small PyTorch multilayer
+perceptron using `data/inventory_history.csv`. It one-hot encodes
+`food_bank_id`, `category`, and `season`, standardizes `quantity_distributed`
+using the training split, and predicts `quantity_required`.
+
+Install the required packages:
+
+```bash
+pip install pandas numpy torch
+```
+
+Open `notebooks/model.ipynb` in VS Code or Jupyter and run the cells in order.
+The notebook uses an 80/20 deterministic train/validation split and writes
+`quantity_required_model.pt` to the repository root.
+
 ## API contract
 
 Both sides code against this. If you change it, update **both**
@@ -52,5 +71,5 @@ Categories: `bread`, `dairy`, `fat`, `non_perishable`.
 
 - **Frontend**: `frontend/app/(tabs)/` holds one file per tab (`donate`, `index` = Home/map, `account`, `insights`);
   shared UI in `frontend/src/components/`.
-- **Backend**: the ML model lives in `backend/app/model.py`. Replace `predict_demand` and
+- **Backend**: the trained model is loaded in `backend/app/model.py`. Replace `predict_demand` and
   `estimate_people_helped` there. Endpoints are in `backend/app/main.py`; seed data in `backend/app/data.py`.
