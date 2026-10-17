@@ -50,12 +50,15 @@ using the training split, and predicts `quantity_required`.
 Install the required packages:
 
 ```bash
-pip install pandas numpy torch
+pip install pandas numpy matplotlib torch
 ```
 
 Open `notebooks/model.ipynb` in VS Code or Jupyter and run the cells in order.
 The notebook uses an 80/20 deterministic train/validation split and writes
-`quantity_required_model.pt` to the repository root.
+`quantity_required_model.pt` to the repository root. The FastAPI backend loads
+that checkpoint at startup and uses it for the `forecast_qty` returned for each
+food bank and category. The mobile app displays that forecast alongside the
+remaining amount needed after pledges.
 
 ## API contract
 

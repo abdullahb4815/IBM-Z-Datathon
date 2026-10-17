@@ -33,7 +33,8 @@ export function FoodBankCard({ bank, needs, onDonate }: Props) {
             <View style={[styles.dot, { backgroundColor: urgencyColor(need.urgency) }]} />
             <View style={{ flex: 1 }}>
               <Text style={styles.item}>{need.item}</Text>
-              <Text style={styles.sub}>{need.needed_qty} units needed</Text>
+              <Text style={styles.sub}>Forecast: {need.forecast_qty} units</Text>
+              <Text style={styles.sub}>{need.needed_qty} units still needed</Text>
             </View>
             <Pressable style={styles.donateBtn} onPress={() => onDonate(bank, need)}>
               <Text style={styles.donateText}>Donate</Text>

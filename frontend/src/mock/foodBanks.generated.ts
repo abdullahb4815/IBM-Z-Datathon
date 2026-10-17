@@ -13,12 +13,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 89,
         "needed_qty": 89,
         "urgency": 0.6
       },
       {
         "item": "Baked Goods",
         "category": "baked_goods",
+        "forecast_qty": 58,
         "needed_qty": 58,
         "urgency": 0.34
       }
@@ -34,18 +36,21 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Toiletries",
         "category": "toiletries",
+        "forecast_qty": 151,
         "needed_qty": 151,
         "urgency": 0.77
       },
       {
         "item": "Baked Goods",
         "category": "baked_goods",
+        "forecast_qty": 122,
         "needed_qty": 122,
         "urgency": 0.72
       },
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 101,
         "needed_qty": 101,
         "urgency": 0.62
       }
@@ -61,12 +66,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 65,
         "needed_qty": 65,
         "urgency": 0.78
       },
       {
         "item": "Dry Staples",
         "category": "dry_staples",
+        "forecast_qty": 24,
         "needed_qty": 24,
         "urgency": 0.14
       }
@@ -82,18 +89,21 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Dry Staples",
         "category": "dry_staples",
+        "forecast_qty": 132,
         "needed_qty": 132,
         "urgency": 0.77
       },
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 75,
         "needed_qty": 75,
         "urgency": 0.58
       },
       {
         "item": "Baked Goods",
         "category": "baked_goods",
+        "forecast_qty": 31,
         "needed_qty": 31,
         "urgency": 0.5
       }
@@ -109,6 +119,7 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 50,
         "needed_qty": 50,
         "urgency": 0.49
       }
@@ -124,12 +135,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 122,
         "needed_qty": 122,
         "urgency": 0.73
       },
       {
         "item": "Baked Goods",
         "category": "baked_goods",
+        "forecast_qty": 88,
         "needed_qty": 88,
         "urgency": 0.46
       }
@@ -145,6 +158,7 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 81,
         "needed_qty": 81,
         "urgency": 0.94
       }
@@ -160,18 +174,21 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 120,
         "needed_qty": 120,
         "urgency": 0.92
       },
       {
         "item": "Toiletries",
         "category": "toiletries",
+        "forecast_qty": 81,
         "needed_qty": 81,
         "urgency": 0.69
       },
       {
         "item": "Baked Goods",
         "category": "baked_goods",
+        "forecast_qty": 78,
         "needed_qty": 78,
         "urgency": 0.46
       }
@@ -187,6 +204,7 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Dry Staples",
         "category": "dry_staples",
+        "forecast_qty": 72,
         "needed_qty": 72,
         "urgency": 0.45
       }
@@ -202,12 +220,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
       {
         "item": "Fresh Produce",
         "category": "fresh_produce",
+        "forecast_qty": 68,
         "needed_qty": 68,
         "urgency": 0.81
       },
       {
         "item": "Dry Staples",
         "category": "dry_staples",
+        "forecast_qty": 52,
         "needed_qty": 52,
         "urgency": 0.6
       }

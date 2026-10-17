@@ -24,12 +24,17 @@ def build_needs(bank: dict) -> list[Need]:
         if record is None:
             continue
         pledged = PLEDGED_UNITS.get((bank["id"], category), 0)
-        required = model.predict_required(bank["id"], category, record) - pledged
+        forecast = model.predict_required(bank["id"], category, record)
+        required = forecast - pledged
         if required > 0:
             stock = int(record["quantity_in_stock"]) + pledged
-            needs.append(
-                Need(item=label, category=category, needed_qty=required, urgency=model.urgency(required, stock))
-            )
+            needs.append(Need(
+                item=label,
+                category=category,
+                forecast_qty=forecast,
+                needed_qty=required,
+                urgency=model.urgency(required, stock),
+            ))
     return sorted(needs, key=lambda n: n.urgency, reverse=True)
 
 

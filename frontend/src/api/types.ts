@@ -6,6 +6,7 @@ export type Category = 'baked_goods' | 'dry_staples' | 'fresh_produce' | 'tinned
 export interface Need {
   item: string; // display name, currently the category label
   category: Category;
+  forecast_qty: number; // model forecast before existing pledges
   needed_qty: number; // units still needed (quantity_required, predicted by the backend model)
   urgency: number; // 0..1, computed by the backend model
 }

@@ -76,7 +76,7 @@ function needsFor(bankId) {
     if (required <= 0) continue;
     // Share of the shortfall relative to what the bank would have once it's met.
     const urgency = Math.round((required / (required + stock)) * 100) / 100;
-    needs.push({ item: label, category, needed_qty: required, urgency });
+    needs.push({ item: label, category, forecast_qty: required, needed_qty: required, urgency });
   }
   return needs.sort((a, b) => b.urgency - a.urgency);
 }

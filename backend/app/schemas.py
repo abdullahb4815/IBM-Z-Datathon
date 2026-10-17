@@ -19,7 +19,8 @@ CATEGORY_LABELS: dict[str, str] = {
 class Need(BaseModel):
     item: str  # display name, currently the category label
     category: Category
-    needed_qty: int  # units still needed (quantity_required, predicted by the model)
+    forecast_qty: int  # model forecast before subtracting existing pledges
+    needed_qty: int  # units still needed after existing pledges
     urgency: float = Field(ge=0, le=1)
 
 

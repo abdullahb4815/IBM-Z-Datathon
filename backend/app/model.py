@@ -1,11 +1,53 @@
-"""AI/ML layer.
+"""AI/ML layer backed by the trained PyTorch checkpoint."""
 
-The API only calls the functions below, so their signatures are the contract
-between the model and the rest of the backend.
-"""
+from pathlib import Path
+
+import torch
+from torch import nn
 
 # Placeholder: rough units of food that feed one person.
 UNITS_PER_PERSON = 3
+
+
+class RequirementPredictor(nn.Module):
+    def __init__(self, input_size: int) -> None:
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Linear(input_size, 64),
+            nn.ReLU(),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 1),
+        )
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        return self.network(inputs).squeeze(1)
+
+
+MODEL_PATH = Path(__file__).resolve().parents[2] / "quantity_required_model.pt"
+_checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=True)
+_FEATURE_NAMES: list[str] = _checkpoint["feature_names"]
+_DISTRIBUTED_MEAN = float(_checkpoint["quantity_distributed_mean"])
+_DISTRIBUTED_STD = float(_checkpoint["quantity_distributed_std"]) or 1.0
+_model = RequirementPredictor(int(_checkpoint["model_input_size"]))
+_model.load_state_dict(_checkpoint["model_state_dict"])
+_model.eval()
+
+
+def _model_features(foodbank_id: str, category: str, record: dict) -> list[float]:
+    """Build the exact one-hot feature order used by the training notebook."""
+    values = {
+        "quantity_distributed": (
+            float(record["quantity_distributed"]) - _DISTRIBUTED_MEAN
+        )
+        / _DISTRIBUTED_STD,
+        f"food_bank_id_{foodbank_id}": 1.0,
+        f"category_{record['category']}": 1.0,
+        f"season_{record['season']}": 1.0,
+    }
+    return [values.get(feature_name, 0.0) for feature_name in _FEATURE_NAMES]
 
 
 def predict_required(foodbank_id: str, category: str, record: dict) -> int:
@@ -13,12 +55,11 @@ def predict_required(foodbank_id: str, category: str, record: dict) -> int:
 
     `record` is the latest row from data/inventory_history.csv for this food bank
     and category (string values, as read by csv.DictReader).
-
-    TODO(model): load quantity_required_model.pt (see notebooks/model.ipynb) and
-    predict from food_bank_id, category, season and quantity_distributed. Until
-    then this returns the recorded quantity_required.
     """
-    return int(record["quantity_required"])
+    features = torch.tensor([_model_features(foodbank_id, category, record)], dtype=torch.float32)
+    with torch.inference_mode():
+        prediction = float(_model(features).item())
+    return max(0, round(prediction))
 
 
 def urgency(required: int, stock: int) -> float:
