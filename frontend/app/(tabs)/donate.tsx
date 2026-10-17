@@ -1,21 +1,21 @@
 // Donate: category filter, bulletin board, and foldable list of food banks with their needs.
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text } from 'react-native';
 import { createPledge, getBulletin, getFoodBanks } from '../../src/api/client';
 import type { BulletinPost, Category, FoodBank, Need } from '../../src/api/types';
 import { BulletinBoard } from '../../src/components/BulletinBoard';
+import { DonateSheet } from '../../src/components/DonateSheet';
 import { FoodBankCard } from '../../src/components/FoodBankCard';
 import { getDeviceId } from '../../src/storage';
 import { CATEGORIES, colors } from '../../src/theme';
-
-const QTY_OPTIONS = [1, 5, 10];
 
 export default function DonateScreen() {
   const [banks, setBanks] = useState<FoodBank[]>([]);
   const [posts, setPosts] = useState<BulletinPost[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [target, setTarget] = useState<{ bank: FoodBank; need: Need } | null>(null);
 
   const load = useCallback(async () => {
     const [b, p] = await Promise.all([getFoodBanks(), getBulletin()]);
@@ -33,24 +33,15 @@ export default function DonateScreen() {
     setRefreshing(false);
   }
 
-  function onDonate(bank: FoodBank, need: Need) {
-    Alert.alert(`Donate ${need.item}`, `How many units for ${bank.name}?`, [
-      ...QTY_OPTIONS.map((qty) => ({
-        text: `${qty}`,
-        onPress: async () => {
-          await createPledge({
-            device_id: await getDeviceId(),
-            foodbank_id: bank.id,
-            item: need.item,
-            category: need.category,
-            qty,
-          });
-          Alert.alert('Thank you!', `You pledged ${qty} × ${need.item}. Drop it off at ${bank.address}.`);
-          load();
-        },
-      })),
-      { text: 'Cancel', style: 'cancel' as const },
-    ]);
+  async function confirmPledge(bank: FoodBank, need: Need, qty: number) {
+    await createPledge({
+      device_id: await getDeviceId(),
+      foodbank_id: bank.id,
+      item: need.item,
+      category: need.category,
+      qty,
+    });
+    load();
   }
 
   const visible = banks
@@ -80,9 +71,11 @@ export default function DonateScreen() {
 
       <Text style={styles.heading}>Food banks in need</Text>
       {visible.map(({ bank, needs }) => (
-        <FoodBankCard key={bank.id} bank={bank} needs={needs} onDonate={onDonate} />
+        <FoodBankCard key={bank.id} bank={bank} needs={needs} onDonate={(b, n) => setTarget({ bank: b, need: n })} />
       ))}
       {visible.length === 0 && <Text style={styles.empty}>No food banks need this category right now.</Text>}
+
+      <DonateSheet target={target} onClose={() => setTarget(null)} onConfirm={confirmPledge} />
     </ScrollView>
   );
 }

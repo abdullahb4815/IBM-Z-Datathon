@@ -22,6 +22,12 @@ export const CATEGORIES: { key: Category; label: string; icon: string }[] = [
   { key: 'toiletries', label: 'Toiletries', icon: 'toothbrush-paste' },
 ];
 
+export function urgencyLabel(urgency: number): string {
+  if (urgency >= 0.7) return 'High';
+  if (urgency >= 0.4) return 'Medium';
+  return 'Low';
+}
+
 export function urgencyColor(urgency: number): string {
   if (urgency >= 0.7) return colors.high;
   if (urgency >= 0.4) return colors.medium;
