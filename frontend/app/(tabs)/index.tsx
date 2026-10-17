@@ -16,11 +16,15 @@ export default function HomeScreen() {
   useEffect(() => {
     (async () => {
       let coords: { lat: number; lng: number } | undefined;
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        const pos = await Location.getCurrentPositionAsync({});
-        coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        setUser(coords);
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const pos = await Location.getCurrentPositionAsync({});
+          coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          setUser(coords);
+        }
+      } catch {
+        // Location services off or unavailable: fall back to the default centre.
       }
       setBanks(await getFoodBanks(coords));
     })();
