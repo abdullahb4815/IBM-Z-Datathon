@@ -1,4 +1,5 @@
 // OpenStreetMap via Leaflet inside a WebView. Needs no API key and works in Expo Go.
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import type { FoodBank } from '../api/types';
@@ -15,7 +16,9 @@ const BASE_URL = 'https://github.com/abdullahb4815/IBM-Z-Datathon';
 // Only centre on the user if they are this close to a food bank; otherwise show all food banks.
 const NEARBY_KM = 50;
 
-function buildHtml({ banks, user }: Props): string {
+// The user's position is not baked into the HTML: it arrives later through setUser(), so the map
+// can show straight away and isn't reloaded when the GPS fix comes in.
+function buildHtml(banks: FoodBank[]): string {
   const markers = banks.map((b) => ({
     lat: b.lat,
     lng: b.lng,
@@ -25,7 +28,7 @@ function buildHtml({ banks, user }: Props): string {
     needs: b.needs.slice(0, 3).map((n) => `${n.item} (${n.needed_qty})`),
   }));
   // Escape "<" so the data can't close the <script> tag early.
-  const data = JSON.stringify({ markers, user, userColor: colors.primary, nearbyKm: NEARBY_KM }).replace(
+  const data = JSON.stringify({ markers, userColor: colors.primary, nearbyKm: NEARBY_KM }).replace(
     /</g,
     '\\u003c',
   );
@@ -48,7 +51,7 @@ function buildHtml({ banks, user }: Props): string {
 <body>
   <div id="map"></div>
   <script>
-    const { markers, user, userColor, nearbyKm } = ${data};
+    const { markers, userColor, nearbyKm } = ${data};
     const map = L.map('map', { zoomControl: false });
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -126,27 +129,46 @@ function buildHtml({ banks, user }: Props): string {
       bounds.push([m.lat, m.lng]);
     }
 
-    if (user) {
-      L.circleMarker([user.lat, user.lng], {
+    if (bounds.length) map.fitBounds(bounds, { padding: [40, 40] });
+    else map.setView([53.48, -2.24], 11);
+
+    // Called from React Native once the phone's location is known.
+    let userMarker = null;
+    let centredOnUser = false;
+    window.setUser = (lat, lng) => {
+      if (userMarker) userMarker.setLatLng([lat, lng]);
+      else userMarker = L.circleMarker([lat, lng], {
         radius: 7, color: '#fff', weight: 3, fillColor: userColor, fillOpacity: 1,
       }).addTo(map);
-    }
-
-    const userIsNearby = user && bounds.some((b) => map.distance(b, [user.lat, user.lng]) / 1000 <= nearbyKm);
-    if (userIsNearby) map.setView([user.lat, user.lng], 13);
-    else if (bounds.length) map.fitBounds(bounds, { padding: [40, 40] });
-    else map.setView([53.48, -2.24], 11);
+      const nearby = bounds.some((b) => map.distance(b, [lat, lng]) / 1000 <= nearbyKm);
+      if (nearby && !centredOnUser) {
+        centredOnUser = true;
+        map.setView([lat, lng], 13);
+      }
+    };
   </script>
 </body>
 </html>`;
 }
 
-export function OsmMap(props: Props) {
+export function OsmMap({ banks, user }: Props) {
+  const ref = useRef<WebView>(null);
+  const html = useMemo(() => buildHtml(banks), [banks]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => setLoaded(false), [html]);
+
+  useEffect(() => {
+    if (loaded && user) ref.current?.injectJavaScript(`window.setUser(${user.lat}, ${user.lng}); true;`);
+  }, [loaded, user]);
+
   return (
     <WebView
+      ref={ref}
       style={StyleSheet.absoluteFill}
       originWhitelist={['*']}
-      source={{ html: buildHtml(props), baseUrl: BASE_URL }}
+      source={{ html, baseUrl: BASE_URL }}
+      onLoadEnd={() => setLoaded(true)}
     />
   );
 }

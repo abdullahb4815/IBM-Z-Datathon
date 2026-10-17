@@ -6,12 +6,17 @@ import { CATEGORIES } from '../theme';
 import type { BulletinPost, Category, FoodBank, Insights, PledgeIn } from './types';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+const REQUEST_TIMEOUT_MS = 5000;
 
 async function request<T>(path: string, fallback: () => T | Promise<T>, init?: RequestInit): Promise<T> {
   if (!BASE_URL) return fallback();
+  // Give up after a few seconds so an unreachable backend falls back to offline data quickly.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
       ...init,
+      signal: controller.signal,
       headers: { 'Content-Type': 'application/json', ...init?.headers },
     });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -19,6 +24,8 @@ async function request<T>(path: string, fallback: () => T | Promise<T>, init?: R
   } catch (err) {
     console.warn(`API ${path} failed, using fallback:`, err);
     return fallback();
+  } finally {
+    clearTimeout(timer);
   }
 }
 
