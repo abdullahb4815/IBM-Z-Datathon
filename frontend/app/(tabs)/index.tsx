@@ -1,16 +1,16 @@
 // Home: map of nearby food banks.
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import MapView, { Callout, Marker } from 'react-native-maps';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { getFoodBanks } from '../../src/api/client';
 import type { FoodBank } from '../../src/api/types';
-import { colors, urgencyColor } from '../../src/theme';
+import { OsmMap } from '../../src/components/OsmMap';
+import { colors } from '../../src/theme';
 
-const DEFAULT_REGION = { latitude: 51.5079, longitude: -0.1281, latitudeDelta: 0.05, longitudeDelta: 0.05 };
+const DEFAULT_CENTER = { lat: 51.5079, lng: -0.1281 };
 
 export default function HomeScreen() {
-  const [region, setRegion] = useState(DEFAULT_REGION);
+  const [user, setUser] = useState<{ lat: number; lng: number }>();
   const [banks, setBanks] = useState<FoodBank[] | null>(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function HomeScreen() {
       if (status === 'granted') {
         const pos = await Location.getCurrentPositionAsync({});
         coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        setRegion({ ...DEFAULT_REGION, latitude: coords.lat, longitude: coords.lng });
+        setUser(coords);
       }
       setBanks(await getFoodBanks(coords));
     })();
@@ -34,38 +34,9 @@ export default function HomeScreen() {
     );
   }
 
-  return (
-    <MapView style={StyleSheet.absoluteFill} region={region} showsUserLocation>
-      {banks.map((bank) => {
-        const topUrgency = bank.needs[0]?.urgency ?? 0;
-        return (
-          <Marker
-            key={bank.id}
-            coordinate={{ latitude: bank.lat, longitude: bank.lng }}
-            pinColor={urgencyColor(topUrgency)}
-          >
-            <Callout>
-              <View style={styles.callout}>
-                <Text style={styles.name}>{bank.name}</Text>
-                <Text style={styles.sub}>{bank.address}</Text>
-                {bank.needs.slice(0, 3).map((n) => (
-                  <Text key={n.item} style={styles.need}>
-                    • {n.item} ({n.needed_qty})
-                  </Text>
-                ))}
-              </View>
-            </Callout>
-          </Marker>
-        );
-      })}
-    </MapView>
-  );
+  return <OsmMap banks={banks} center={user ?? DEFAULT_CENTER} user={user} />;
 }
 
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  callout: { width: 200, padding: 4 },
-  name: { fontWeight: '700', fontSize: 14, color: colors.text },
-  sub: { fontSize: 12, color: colors.muted, marginBottom: 4 },
-  need: { fontSize: 13, color: colors.text },
 });
