@@ -45,7 +45,9 @@ EXPO_PUBLIC_API_URL=http://192.168.x.x:8000
 The [model notebook](notebooks/model.ipynb) trains a small PyTorch multilayer
 perceptron using `data/inventory_history.csv`. It one-hot encodes
 `food_bank_id`, `category`, and `season`, standardizes `quantity_distributed`
-using the training split, and predicts `quantity_required`.
+and `quantity_in_stock` using the training split, and predicts
+`quantity_required`. Including stock is important because the target is
+strongly related to current inventory.
 
 Install the required packages:
 
@@ -59,6 +61,12 @@ The notebook uses an 80/20 deterministic train/validation split and writes
 that checkpoint at startup and uses it for the `forecast_qty` returned for each
 food bank and category. The mobile app displays that forecast alongside the
 remaining amount needed after pledges.
+
+The final notebook evaluation displays MSE, RMSE, MAE, R-squared, tolerance
+accuracy, an actual-versus-predicted plot, and a demand-band confusion matrix.
+The confusion matrix is an interpretation aid for this regression model: it
+groups quantities into None, Low, Medium, High, and Very High bands rather than
+treating the model as a native classifier.
 
 ## API contract
 

@@ -29,8 +29,16 @@ class RequirementPredictor(nn.Module):
 MODEL_PATH = Path(__file__).resolve().parents[2] / "quantity_required_model.pt"
 _checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=True)
 _FEATURE_NAMES: list[str] = _checkpoint["feature_names"]
-_DISTRIBUTED_MEAN = float(_checkpoint["quantity_distributed_mean"])
-_DISTRIBUTED_STD = float(_checkpoint["quantity_distributed_std"]) or 1.0
+_NUMERIC_MEANS = _checkpoint.get("numeric_feature_means")
+_NUMERIC_STDS = _checkpoint.get("numeric_feature_stds")
+if _NUMERIC_MEANS is None:
+    _NUMERIC_MEANS = {
+        "quantity_distributed": _checkpoint["quantity_distributed_mean"],
+    }
+if _NUMERIC_STDS is None:
+    _NUMERIC_STDS = {
+        "quantity_distributed": _checkpoint["quantity_distributed_std"],
+    }
 _model = RequirementPredictor(int(_checkpoint["model_input_size"]))
 _model.load_state_dict(_checkpoint["model_state_dict"])
 _model.eval()
@@ -39,14 +47,18 @@ _model.eval()
 def _model_features(foodbank_id: str, category: str, record: dict) -> list[float]:
     """Build the exact one-hot feature order used by the training notebook."""
     values = {
-        "quantity_distributed": (
-            float(record["quantity_distributed"]) - _DISTRIBUTED_MEAN
+        numeric_column: (
+            float(record[numeric_column]) - float(_NUMERIC_MEANS[numeric_column])
         )
-        / _DISTRIBUTED_STD,
+        / (float(_NUMERIC_STDS[numeric_column]) or 1.0)
+        for numeric_column in ("quantity_in_stock", "quantity_distributed")
+        if numeric_column in _NUMERIC_MEANS
+    }
+    values.update({
         f"food_bank_id_{foodbank_id}": 1.0,
         f"category_{record['category']}": 1.0,
         f"season_{record['season']}": 1.0,
-    }
+    })
     return [values.get(feature_name, 0.0) for feature_name in _FEATURE_NAMES]
 
 
