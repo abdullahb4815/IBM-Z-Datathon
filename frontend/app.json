@@ -19,7 +19,9 @@
         {
           "photosPermission": "We use your photos so you can set a profile picture."
         }
-      ]
+      ],
+      "expo-status-bar",
+      "expo-font"
     ]
   }
 }
