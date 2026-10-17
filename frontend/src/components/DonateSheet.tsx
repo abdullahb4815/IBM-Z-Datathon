@@ -1,4 +1,4 @@
-// Bottom sheet for pledging a donation: shows the need, lets the donor pick a quantity, then confirms.
+// Bottom sheet for making a donation: shows the need, lets the donor pick a quantity, then confirms.
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import {
@@ -28,7 +28,7 @@ export function DonateSheet({ target, onClose, onConfirm }: Props) {
   const insets = useSafeAreaInsets();
   const [text, setText] = useState('1');
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState<number | null>(null); // pledged qty once confirmed
+  const [done, setDone] = useState<number | null>(null); // donated qty once confirmed
 
   // Reset whenever the sheet opens for a new need.
   useEffect(() => {
@@ -82,9 +82,9 @@ export function DonateSheet({ target, onClose, onConfirm }: Props) {
               </View>
               <Text style={styles.successTitle}>Thank you!</Text>
               <Text style={styles.successText}>
-                You pledged {done} {done === 1 ? 'unit' : 'units'} of {need.item.toLowerCase()} to {bank.name}.
+                You're donating {done} {done === 1 ? 'unit' : 'units'} of {need.item.toLowerCase()} to {bank.name}.
               </Text>
-              <Text style={styles.successHint}>Find the drop-off point on the Home map.</Text>
+              <Text style={styles.successHint}>Find the drop-off point on the Map tab.</Text>
               <Pressable style={styles.primaryBtn} onPress={onClose}>
                 <Text style={styles.primaryText}>Done</Text>
               </Pressable>
@@ -153,7 +153,7 @@ export function DonateSheet({ target, onClose, onConfirm }: Props) {
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <Text style={styles.primaryText}>
-                    {valid ? `Pledge ${qty} ${qty === 1 ? 'unit' : 'units'}` : 'Enter a quantity'}
+                    {valid ? `Donate ${qty} ${qty === 1 ? 'unit' : 'units'}` : 'Enter a quantity'}
                   </Text>
                 )}
               </Pressable>

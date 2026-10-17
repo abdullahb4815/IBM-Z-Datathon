@@ -1,4 +1,4 @@
-// Home: map of nearby food banks.
+// Map: nearby food banks.
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -7,7 +7,7 @@ import type { FoodBank } from '../../src/api/types';
 import { OsmMap } from '../../src/components/OsmMap';
 import { colors } from '../../src/theme';
 
-export default function HomeScreen() {
+export default function MapScreen() {
   const [user, setUser] = useState<{ lat: number; lng: number }>();
   const [banks, setBanks] = useState<FoodBank[] | null>(null);
 

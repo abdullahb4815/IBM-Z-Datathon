@@ -6,7 +6,7 @@ import { colors } from '../../src/theme';
 
 type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
-// Open on the Home (map) tab even though Donate is first in the tab bar.
+// Open on the Map tab even though Donate is first in the tab bar.
 export const unstable_settings = { initialRouteName: 'index' };
 
 function icon(name: IconName) {
@@ -25,7 +25,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen name="donate" options={{ title: 'Donate', tabBarIcon: icon('piggy-bank') }} />
-      <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: icon('home') }} />
+      <Tabs.Screen name="index" options={{ title: 'Map', tabBarIcon: icon('map') }} />
       <Tabs.Screen name="account" options={{ title: 'Account', tabBarIcon: icon('account-circle') }} />
       <Tabs.Screen name="insights" options={{ title: 'Insights', tabBarIcon: icon('chart-bar') }} />
     </Tabs>

@@ -84,7 +84,7 @@ Categories (from `data/inventory_history.csv`): `baked_goods`, `dry_staples`, `f
 
 ## Who works where
 
-- **Frontend**: `frontend/app/(tabs)/` holds one file per tab (`donate`, `index` = Home/map, `account`, `insights`);
+- **Frontend**: `frontend/app/(tabs)/` holds one file per tab (`donate`, `index` = Map, `account`, `insights`);
   shared UI in `frontend/src/components/`.
 - **Backend**: the backend reads both CSVs at startup (`backend/app/data.py`). Plug the trained model into
   `predict_required` in `backend/app/model.py`, and replace
