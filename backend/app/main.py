@@ -38,6 +38,11 @@ def build_needs(bank: dict) -> list[Need]:
     return sorted(needs, key=lambda n: n.urgency, reverse=True)
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "docs": "/docs"}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
