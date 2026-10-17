@@ -1,0 +1,17 @@
+# Frontend
+node_modules/
+.expo/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+
+# Backend
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Misc
+.DS_Store
+.ipynb_checkpoints/

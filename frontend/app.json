@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "FoodBank",
+    "slug": "foodbank-app",
+    "scheme": "foodbank",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "We use your location to show food banks near you."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "We use your photos so you can set a profile picture."
+        }
+      ]
+    ]
+  }
+}
