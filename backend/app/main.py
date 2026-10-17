@@ -4,8 +4,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import model
-from .data import BULLETIN, FOODBANKS, PLEDGES
-from .schemas import BulletinPost, FoodBank, Insights, Need, PledgeIn
+from .data import BULLETIN, FOODBANKS, LATEST_INVENTORY, PLEDGED_UNITS, PLEDGES
+from .schemas import CATEGORY_LABELS, BulletinPost, FoodBank, Insights, Need, PledgeIn
 
 app = FastAPI(title="Food Bank API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -19,12 +19,16 @@ def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
 
 def build_needs(bank: dict) -> list[Need]:
     needs = []
-    for (item, category), stock in bank["stock"].items():
-        demand = model.predict_demand(bank["id"], item, category)
-        needed = demand - stock
-        if needed > 0:
+    for category, label in CATEGORY_LABELS.items():
+        record = LATEST_INVENTORY.get((bank["id"], category))
+        if record is None:
+            continue
+        pledged = PLEDGED_UNITS.get((bank["id"], category), 0)
+        required = model.predict_required(bank["id"], category, record) - pledged
+        if required > 0:
+            stock = int(record["quantity_in_stock"]) + pledged
             needs.append(
-                Need(item=item, category=category, needed_qty=needed, urgency=model.urgency(stock, demand))
+                Need(item=label, category=category, needed_qty=required, urgency=model.urgency(required, stock))
             )
     return sorted(needs, key=lambda n: n.urgency, reverse=True)
 
@@ -65,8 +69,8 @@ def create_pledge(pledge: PledgeIn):
     bank = next((b for b in FOODBANKS if b["id"] == pledge.foodbank_id), None)
     if bank is None:
         raise HTTPException(404, "Food bank not found")
-    key = (pledge.item, pledge.category)
-    bank["stock"][key] = bank["stock"].get(key, 0) + pledge.qty
+    key = (pledge.foodbank_id, pledge.category)
+    PLEDGED_UNITS[key] = PLEDGED_UNITS.get(key, 0) + pledge.qty
     PLEDGES.setdefault(pledge.device_id, []).append(pledge.model_dump())
     return {"ok": True}
 
@@ -74,7 +78,7 @@ def create_pledge(pledge: PledgeIn):
 @app.get("/insights/{device_id}", response_model=Insights)
 def get_insights(device_id: str):
     pledges = PLEDGES.get(device_id, [])
-    by_category = {"bread": 0, "dairy": 0, "fat": 0, "non_perishable": 0}
+    by_category = dict.fromkeys(CATEGORY_LABELS, 0)
     for p in pledges:
         by_category[p["category"]] += p["qty"]
     units = sum(by_category.values())

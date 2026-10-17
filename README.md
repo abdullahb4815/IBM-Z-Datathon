@@ -30,7 +30,8 @@ npx expo install --fix          # aligns package versions with your Expo SDK
 npx expo start                  # scan the QR code with Expo Go
 ```
 
-The map shows the food banks from `data/food_banks.csv`. After editing that CSV, run
+The app shows the food banks from `data/food_banks.csv`, with needs from the latest rows of
+`data/inventory_history.csv`. After editing either CSV, run
 `npm run import:food-banks` in `frontend/` to regenerate `src/mock/foodBanks.generated.ts`.
 
 The frontend uses mock data until you point it at the backend. To connect, create
@@ -68,11 +69,12 @@ Both sides code against this. If you change it, update **both**
 | POST | `/pledges` | body `PledgeIn` → `201 {ok: true}` |
 | GET | `/insights/{device_id}` | `Insights` (units donated, people helped, per-category) |
 
-Categories: `bread`, `dairy`, `fat`, `non_perishable`.
+Categories (from `data/inventory_history.csv`): `baked_goods`, `dry_staples`, `fresh_produce`, `tinned_goods`, `toiletries`.
 
 ## Who works where
 
 - **Frontend**: `frontend/app/(tabs)/` holds one file per tab (`donate`, `index` = Home/map, `account`, `insights`);
   shared UI in `frontend/src/components/`.
-- **Backend**: the trained model is loaded in `backend/app/model.py`. Replace `predict_demand` and
-  `estimate_people_helped` there. Endpoints are in `backend/app/main.py`; seed data in `backend/app/data.py`.
+- **Backend**: the backend reads both CSVs at startup (`backend/app/data.py`). Plug the trained model into
+  `predict_required` in `backend/app/model.py`, and replace
+  `estimate_people_helped` there. Endpoints are in `backend/app/main.py`.

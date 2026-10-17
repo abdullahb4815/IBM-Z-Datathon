@@ -4,13 +4,22 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-Category = Literal["bread", "dairy", "fat", "non_perishable"]
+Category = Literal["baked_goods", "dry_staples", "fresh_produce", "tinned_goods", "toiletries"]
+
+# Category labels as they appear in data/inventory_history.csv.
+CATEGORY_LABELS: dict[str, str] = {
+    "baked_goods": "Baked Goods",
+    "dry_staples": "Dry Staples",
+    "fresh_produce": "Fresh Produce",
+    "tinned_goods": "Tinned Goods",
+    "toiletries": "Toiletries",
+}
 
 
 class Need(BaseModel):
-    item: str
+    item: str  # display name, currently the category label
     category: Category
-    needed_qty: int  # units still needed (predicted demand - current stock)
+    needed_qty: int  # units still needed (quantity_required, predicted by the model)
     urgency: float = Field(ge=0, le=1)
 
 
@@ -35,7 +44,7 @@ class BulletinPost(BaseModel):
 class PledgeIn(BaseModel):
     device_id: str
     foodbank_id: str
-    item: str
+    item: str  # display name, currently the category label
     category: Category
     qty: int = Field(gt=0)
 

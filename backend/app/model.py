@@ -1,30 +1,31 @@
-"""AI/ML layer. Everything here is a placeholder for the real model.
+"""AI/ML layer.
 
 The API only calls the functions below, so their signatures are the contract
 between the model and the rest of the backend.
 """
 
-# Placeholder weekly demand per category until the model is trained.
-_BASELINE_DEMAND = {"bread": 50, "dairy": 80, "fat": 40, "non_perishable": 130}
-
 # Placeholder: rough units of food that feed one person.
 UNITS_PER_PERSON = 3
 
 
-def predict_demand(foodbank_id: str, item: str, category: str) -> int:
-    """Predicted units this food bank will need for `item` over the next week.
+def predict_required(foodbank_id: str, category: str, record: dict) -> int:
+    """Units this food bank is short of in `category`.
 
-    TODO(model): replace with a trained model (e.g. historic usage, season,
-    local population, nearby food banks' stock).
+    `record` is the latest row from data/inventory_history.csv for this food bank
+    and category (string values, as read by csv.DictReader).
+
+    TODO(model): load quantity_required_model.pt (see notebooks/model.ipynb) and
+    predict from food_bank_id, category, season and quantity_distributed. Until
+    then this returns the recorded quantity_required.
     """
-    return _BASELINE_DEMAND[category]
+    return int(record["quantity_required"])
 
 
-def urgency(stock: int, demand: int) -> float:
-    """0 = fully stocked, 1 = nothing on the shelf."""
-    if demand <= 0:
+def urgency(required: int, stock: int) -> float:
+    """0 = nothing needed, approaching 1 = shortfall dwarfs current stock."""
+    if required <= 0:
         return 0.0
-    return round(max(0.0, min(1.0, 1 - stock / demand)), 2)
+    return round(required / (required + max(stock, 0)), 2)
 
 
 def estimate_people_helped(units: int) -> int:

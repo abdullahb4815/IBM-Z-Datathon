@@ -1,11 +1,12 @@
 // Shared API contract. Must match backend/app/schemas.py.
 
-export type Category = 'bread' | 'dairy' | 'fat' | 'non_perishable';
+// Matches the categories in data/inventory_history.csv ("Baked Goods" -> 'baked_goods', etc.).
+export type Category = 'baked_goods' | 'dry_staples' | 'fresh_produce' | 'tinned_goods' | 'toiletries';
 
 export interface Need {
-  item: string;
+  item: string; // display name, currently the category label
   category: Category;
-  needed_qty: number; // units still needed (predicted demand - current stock)
+  needed_qty: number; // units still needed (quantity_required, predicted by the backend model)
   urgency: number; // 0..1, computed by the backend model
 }
 
@@ -30,7 +31,7 @@ export interface BulletinPost {
 export interface PledgeIn {
   device_id: string;
   foodbank_id: string;
-  item: string;
+  item: string; // display name, currently the category label
   category: Category;
   qty: number;
 }

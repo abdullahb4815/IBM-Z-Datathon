@@ -2,6 +2,7 @@
 // falls back to mock/local data so the frontend can be built independently.
 import { MOCK_BULLETIN, MOCK_FOODBANKS } from '../mock/data';
 import { addLocalPledge, getLocalPledges } from '../storage';
+import { CATEGORIES } from '../theme';
 import type { BulletinPost, Category, FoodBank, Insights, PledgeIn } from './types';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -45,11 +46,12 @@ const UNITS_PER_PERSON = 3;
 
 async function localInsights(): Promise<Insights> {
   const pledges = await getLocalPledges();
-  const by_category: Record<Category, number> = { bread: 0, dairy: 0, fat: 0, non_perishable: 0 };
+  const by_category = Object.fromEntries(CATEGORIES.map((c) => [c.key, 0])) as Record<Category, number>;
   let units = 0;
   for (const p of pledges) {
     units += p.qty;
-    by_category[p.category] += p.qty;
+    // Pledges saved before the category change have keys that no longer exist.
+    if (p.category in by_category) by_category[p.category] += p.qty;
   }
   return {
     units_donated: units,

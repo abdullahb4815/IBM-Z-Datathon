@@ -1,4 +1,5 @@
-// Generated from data/food_banks.csv by scripts/import-food-banks.mjs. Do not edit by hand.
+// Generated from data/food_banks.csv and data/inventory_history.csv by scripts/import-food-banks.mjs.
+// Do not edit by hand.
 import type { FoodBank } from '../api/types';
 
 export const CSV_FOODBANKS: FoodBank[] = [
@@ -8,7 +9,20 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.44364,
     "lng": -2.44177,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 89,
+        "urgency": 0.6
+      },
+      {
+        "item": "Baked Goods",
+        "category": "baked_goods",
+        "needed_qty": 58,
+        "urgency": 0.34
+      }
+    ]
   },
   {
     "id": "2",
@@ -16,7 +30,26 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.58768,
     "lng": -2.06204,
-    "needs": []
+    "needs": [
+      {
+        "item": "Toiletries",
+        "category": "toiletries",
+        "needed_qty": 151,
+        "urgency": 0.77
+      },
+      {
+        "item": "Baked Goods",
+        "category": "baked_goods",
+        "needed_qty": 122,
+        "urgency": 0.72
+      },
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 101,
+        "urgency": 0.62
+      }
+    ]
   },
   {
     "id": "3",
@@ -24,7 +57,20 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.533,
     "lng": -2.11702,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 65,
+        "urgency": 0.78
+      },
+      {
+        "item": "Dry Staples",
+        "category": "dry_staples",
+        "needed_qty": 24,
+        "urgency": 0.14
+      }
+    ]
   },
   {
     "id": "4",
@@ -32,7 +78,26 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.49966,
     "lng": -2.36506,
-    "needs": []
+    "needs": [
+      {
+        "item": "Dry Staples",
+        "category": "dry_staples",
+        "needed_qty": 132,
+        "urgency": 0.77
+      },
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 75,
+        "urgency": 0.58
+      },
+      {
+        "item": "Baked Goods",
+        "category": "baked_goods",
+        "needed_qty": 31,
+        "urgency": 0.5
+      }
+    ]
   },
   {
     "id": "5",
@@ -40,7 +105,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.389,
     "lng": -2.37727,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 50,
+        "urgency": 0.49
+      }
+    ]
   },
   {
     "id": "6",
@@ -48,7 +120,20 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.389,
     "lng": -2.37664,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 122,
+        "urgency": 0.73
+      },
+      {
+        "item": "Baked Goods",
+        "category": "baked_goods",
+        "needed_qty": 88,
+        "urgency": 0.46
+      }
+    ]
   },
   {
     "id": "7",
@@ -56,7 +141,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.36452,
     "lng": -2.3283,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 81,
+        "urgency": 0.94
+      }
+    ]
   },
   {
     "id": "8",
@@ -64,7 +156,26 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.56654,
     "lng": -2.2401,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 120,
+        "urgency": 0.92
+      },
+      {
+        "item": "Toiletries",
+        "category": "toiletries",
+        "needed_qty": 81,
+        "urgency": 0.69
+      },
+      {
+        "item": "Baked Goods",
+        "category": "baked_goods",
+        "needed_qty": 78,
+        "urgency": 0.46
+      }
+    ]
   },
   {
     "id": "9",
@@ -72,7 +183,14 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.50028,
     "lng": -2.27722,
-    "needs": []
+    "needs": [
+      {
+        "item": "Dry Staples",
+        "category": "dry_staples",
+        "needed_qty": 72,
+        "urgency": 0.45
+      }
+    ]
   },
   {
     "id": "10",
@@ -80,6 +198,19 @@ export const CSV_FOODBANKS: FoodBank[] = [
     "address": "",
     "lat": 53.52702,
     "lng": -2.33351,
-    "needs": []
+    "needs": [
+      {
+        "item": "Fresh Produce",
+        "category": "fresh_produce",
+        "needed_qty": 68,
+        "urgency": 0.81
+      },
+      {
+        "item": "Dry Staples",
+        "category": "dry_staples",
+        "needed_qty": 52,
+        "urgency": 0.6
+      }
+    ]
   }
 ];

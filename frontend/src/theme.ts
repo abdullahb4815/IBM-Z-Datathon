@@ -13,12 +13,13 @@ export const colors = {
   low: '#16A34A',
 };
 
-// Icon names are from MaterialCommunityIcons (@expo/vector-icons).
+// Labels match data/inventory_history.csv. Icon names are from MaterialCommunityIcons (@expo/vector-icons).
 export const CATEGORIES: { key: Category; label: string; icon: string }[] = [
-  { key: 'bread', label: 'Bread', icon: 'bread-slice' },
-  { key: 'dairy', label: 'Dairy', icon: 'cheese' },
-  { key: 'fat', label: 'Fats & Oils', icon: 'bottle-tonic' },
-  { key: 'non_perishable', label: 'Non-perishables', icon: 'food-variant' },
+  { key: 'baked_goods', label: 'Baked Goods', icon: 'baguette' },
+  { key: 'dry_staples', label: 'Dry Staples', icon: 'rice' },
+  { key: 'fresh_produce', label: 'Fresh Produce', icon: 'food-apple' },
+  { key: 'tinned_goods', label: 'Tinned Goods', icon: 'food-variant' },
+  { key: 'toiletries', label: 'Toiletries', icon: 'toothbrush-paste' },
 ];
 
 export function urgencyColor(urgency: number): string {
