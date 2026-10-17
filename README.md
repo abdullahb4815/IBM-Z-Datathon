@@ -30,6 +30,9 @@ npx expo install --fix          # aligns package versions with your Expo SDK
 npx expo start                  # scan the QR code with Expo Go
 ```
 
+The map shows the food banks from `data/food_banks.csv`. After editing that CSV, run
+`npm run import:food-banks` in `frontend/` to regenerate `src/mock/foodBanks.generated.ts`.
+
 The frontend uses mock data until you point it at the backend. To connect, create
 `frontend/.env` with your computer's LAN IP (not `localhost`, since the phone is a separate device):
 ```

@@ -7,8 +7,6 @@ import type { FoodBank } from '../../src/api/types';
 import { OsmMap } from '../../src/components/OsmMap';
 import { colors } from '../../src/theme';
 
-const DEFAULT_CENTER = { lat: 51.5079, lng: -0.1281 };
-
 export default function HomeScreen() {
   const [user, setUser] = useState<{ lat: number; lng: number }>();
   const [banks, setBanks] = useState<FoodBank[] | null>(null);
@@ -38,7 +36,7 @@ export default function HomeScreen() {
     );
   }
 
-  return <OsmMap banks={banks} center={user ?? DEFAULT_CENTER} user={user} />;
+  return <OsmMap banks={banks} user={user} />;
 }
 
 const styles = StyleSheet.create({
